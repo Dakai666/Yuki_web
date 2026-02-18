@@ -80,6 +80,7 @@
             width: 280px;
             height: 400px;
             transform-style: preserve-3d;
+            transform: translateZ(-200px);
             transition: transform 0.8s ease-out;
         }
         
@@ -92,6 +93,8 @@
             cursor: pointer;
             transition: all 0.6s ease;
             transform-style: preserve-3d;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
             background: var(--bg-secondary);
             border: 2px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
@@ -469,18 +472,25 @@
         }
         
         function toggleAutoPlay() {
+            console.log('Toggle autoplay, currently:', isAutoPlaying);
             const btn = document.getElementById('autoPlayBtn');
             
             if (isAutoPlaying) {
                 clearInterval(autoPlayInterval);
+                autoPlayInterval = null;
                 isAutoPlaying = false;
                 btn.textContent = '▶ 自動播放';
                 btn.classList.remove('active');
+                console.log('Autoplay stopped');
             } else {
-                autoPlayInterval = setInterval(nextSlide, 3000);
                 isAutoPlaying = true;
                 btn.textContent = '⏸ 暫停';
                 btn.classList.add('active');
+                autoPlayInterval = setInterval(function() {
+                    currentIndex = (currentIndex + 1) % flowers.length;
+                    updateCarousel();
+                }, 3000);
+                console.log('Autoplay started');
             }
         }
         
