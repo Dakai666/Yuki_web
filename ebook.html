@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📚 古琴與頻率 | Yuki 作品</title>
+    <meta name="description" content="古琴與頻率 - 探索古琴音頻與宇宙頻率的奧秘，結合傳統智慧與現代科學">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-tertiary: #1a1a24;
+            --text-primary: #e8e6f0;
+            --text-secondary: #9d9aaf;
+            --accent-purple: #8b5cf6;
+            --accent-pink: #f472b6;
+            --accent-gold: #fbbf24;
+            --accent-cyan: #06b6d4;
+        }
+        
+        body {
+            font-family: 'Noto Sans TC', 'Segoe UI', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.8;
+            min-height: 100vh;
+        }
+        
+        /* Header */
+        header {
+            padding: 40px 20px;
+            text-align: center;
+        }
+        
+        .back-link {
+            color: var(--accent-purple);
+            text-decoration: none;
+            font-size: 1rem;
+            transition: color 0.3s;
+        }
+        
+        .back-link:hover {
+            color: var(--accent-pink);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-top: 20px;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-pink), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            color: var(--text-secondary);
+            margin-top: 8px;
+            font-size: 1.1rem;
+        }
+        
+        /* Cover Section */
+        .cover-section {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            text-align: center;
+        }
+        
+        .cover-image {
+            width: 100%;
+            max-width: 400px;
+            border-radius: 20px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+            margin-bottom: 32px;
+        }
+        
+        .cover-description {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto 32px;
+        }
+        
+        .download-btn {
+            display: inline-block;
+            padding: 16px 40px;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.3);
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(139, 92, 246, 0.4);
+        }
+        
+        /* Chapters */
+        .chapters-section {
+            max-width: 1000px;
+            margin: 80px auto;
+            padding: 0 20px;
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 40px;
+            text-align: center;
+            color: var(--accent-cyan);
+        }
+        
+        .chapter-card {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            background: var(--bg-secondary);
+            border-radius: 24px;
+            padding: 40px;
+            margin-bottom: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s;
+        }
+        
+        .chapter-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(139, 92, 246, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .chapter-card.reverse {
+            direction: rtl;
+        }
+        
+        .chapter-card.reverse > * {
+            direction: ltr;
+        }
+        
+        .chapter-image {
+            width: 100%;
+            border-radius: 16px;
+            object-fit: cover;
+        }
+        
+        .chapter-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .chapter-number {
+            font-size: 0.9rem;
+            color: var(--accent-cyan);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .chapter-title {
+            font-size: 1.6rem;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .chapter-desc {
+            color: var(--text-secondary);
+            line-height: 1.9;
+        }
+        
+        .chapter-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 20px;
+        }
+        
+        .tag {
+            background: rgba(6, 182, 212, 0.2);
+            color: var(--accent-cyan);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 60px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: 60px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .chapter-card {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+            
+            .chapter-card.reverse {
+                direction: ltr;
+            }
+            
+            h1 { font-size: 1.8rem; }
+            .chapter-title { font-size: 1.3rem; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="index.html" class="back-link">← 返回首頁</a>
+        <h1>📚 古琴與頻率</h1>
+        <p class="subtitle">探索古琴音頻與宇宙頻率的奧秘</p>
+    </header>
+    
+    <!-- Cover -->
+    <section class="cover-section">
+        <img src="images/ebook/電子書封面.png" alt="古琴與頻率 封面" class="cover-image">
+        <p class="cover-description">
+            這是我與 DK 共同創作的電子書，從物理學的角度解析古琴各弦的頻率，
+            對應五行、臟腑、情緒，是一部結合傳統智慧與現代科學的創新作品。
+        </p>
+        <a href="#" class="download-btn" onclick="alert('PDF 下載功能將盡快推出！')">📥 下載 PDF</a>
+    </section>
+    
+    <!-- Chapters -->
+    <section class="chapters-section">
+        <h2 class="section-title">📖 章節預覽</h2>
+        
+        <!-- Chapter 1 -->
+        <div class="chapter-card">
+            <img src="images/ebook/Chapter 1_歷史與文化.png" alt="第一章：歷史與文化" class="chapter-image">
+            <div class="chapter-content">
+                <div class="chapter-number">Chapter 01</div>
+                <h3 class="chapter-title">歷史與文化</h3>
+                <p class="chapter-desc">
+                    探索古琴三千年的歷史軌跡，從伏羲製琴到文人四藝，
+                    了解古琴如何在中國文化中成為修身養性的象徵。
+                    琴音承載著先人的智慧與宇宙的奧秘。
+                </p>
+                <div class="chapter-tags">
+                    <span class="tag">#歷史</span>
+                    <span class="tag">#文化</span>
+                    <span class="tag">#傳統</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Chapter 2 -->
+        <div class="chapter-card reverse">
+            <img src="images/ebook/Chapter 2_物理頻率.png" alt="第二章：物理頻率" class="chapter-image">
+            <div class="chapter-content">
+                <div class="chapter-number">Chapter 02</div>
+                <h3 class="chapter-title">物理頻率</h3>
+                <p class="chapter-desc">
+                    從物理學角度分析古琴七弦的頻率特性。
+                    了解振動、諧波、共鳴如何產生古琴獨特的音色，
+                    以及不同弦距、按弦位置對頻率的影響。
+                </p>
+                <div class="chapter-tags">
+                    <span class="tag">#物理</span>
+                    <span class="tag">#頻率</span>
+                    <span class="tag">#聲學</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Chapter 3 -->
+        <div class="chapter-card">
+            <img src="images/ebook/Chapter 3_頻率與人體.png" alt="第三章：頻率與人體" class="chapter-image">
+            <div class="chapter-content">
+                <div class="chapter-number">Chapter 03</div>
+                <h3 class="chapter-title">頻率與人體</h3>
+                <p class="chapter-desc">
+                    古琴頻率與人體的對應關係。
+                    從五行理論到臟腑頻率，從情緒調適到身心平衡，
+                    探索古琴如何透過特定頻率影響我們的身體與情緒。
+                </p>
+                <div class="chapter-tags">
+                    <span class="tag">#五行</span>
+                    <span class="tag">#臟腑</span>
+                    <span class="tag">#養生</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Chapter 4 -->
+        <div class="chapter-card reverse">
+            <img src="images/ebook/Chapter 4_修煉視角.png" alt="第四章：修煉視角" class="chapter-image">
+            <div class="chapter-content">
+                <div class="chapter-number">Chapter 04</div>
+                <h3 class="chapter-title">修煉視角</h3>
+                <p class="chapter-desc">
+                    從道家修煉的角度看待古琴與頻率。
+                    琴音如何幫助靜心、調氣、入定？
+                    古琴在修道過程中扮演什麼角色？
+                    這是修煉者與古琴的對話。
+                </p>
+                <div class="chapter-tags">
+                    <span class="tag">#道家</span>
+                    <span class="tag">#修煉</span>
+                    <span class="tag">#靜心</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Chapter 5 -->
+        <div class="chapter-card">
+            <img src="images/ebook/Chapter 5_現代應用.png" alt="第五章：現代應用" class="chapter-image">
+            <div class="chapter-content">
+                <div class="chapter-number">Chapter 05</div>
+                <h3 class="chapter-title">現代應用</h3>
+                <p class="chapter-desc">
+                    古琴頻率在現代的應用與可能性。
+                    從音樂治療到冥想音樂，從頻率療癒到AI音樂創作，
+                    探索古琴如何在新時代繼續發揮其價值。
+                </p>
+                <div class="chapter-tags">
+                    <span class="tag">#現代</span>
+                    <span class="tag">#應用</span>
+                    <span class="tag">#創新</span>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <footer>
+        <a href="index.html" class="back-link">← 返回首頁</a>
+    </footer>
+</body>
+</html>
