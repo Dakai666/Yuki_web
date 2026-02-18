@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎨 Yuki Gallery | 頻率之花</title>
+    <meta name="description" content="Yuki 的數位藝術畫廊 - 頻率視覺化系列">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --text-primary: #e8e6f0;
+            --text-secondary: #9d9aaf;
+            --accent-purple: #8b5cf6;
+            --accent-pink: #f472b6;
+            --accent-gold: #ffd700;
+            --gamma-glow: linear-gradient(135deg, #ffd700 0%, #ffffff 100%);
+            --beta-glow: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            --alpha-glow: linear-gradient(135deg, #06b6d4 0%, #8b5cf6 100%);
+            --theta-glow: linear-gradient(135deg, #a855f7 0%, #fbbf24 100%);
+            --delta-glow: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%);
+        }
+        
+        body {
+            font-family: 'Noto Sans TC', 'Segoe UI', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* Particle Canvas */
+        #particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+        
+        /* Main Content */
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        
+        /* Header */
+        header {
+            min-height: 60vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 60px 0;
+        }
+        
+        .gallery-title {
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-pink) 50%, var(--accent-gold) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: titleGlow 3s ease-in-out infinite;
+        }
+        
+        @keyframes titleGlow {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.2); }
+        }
+        
+        .gallery-subtitle {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            margin-bottom: 48px;
+            max-width: 600px;
+        }
+        
+        .scroll-hint {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(10px); }
+        }
+        
+        /* Gallery Sections */
+        .gallery-sections {
+            padding: 40px 0 100px;
+        }
+        
+        .section-card {
+            background: rgba(18, 18, 26, 0.8);
+            border-radius: 24px;
+            padding: 48px;
+            margin-bottom: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            transition: all 0.4s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .section-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(139, 92, 246, 0.15) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .section-card:hover::before {
+            opacity: 1;
+        }
+        
+        .section-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(139, 92, 246, 0.3);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+        }
+        
+        .section-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .section-desc {
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            line-height: 1.8;
+        }
+        
+        .section-preview {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .preview-thumb {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .section-card:hover .preview-thumb {
+            border-color: var(--accent-purple);
+            transform: scale(1.05);
+        }
+        
+        .section-meta {
+            display: flex;
+            gap: 16px;
+            margin-top: 20px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        .meta-tag {
+            background: rgba(139, 92, 246, 0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+        
+        /* Coming Soon Card */
+        .section-card.coming-soon {
+            opacity: 0.6;
+            cursor: default;
+        }
+        
+        .section-card.coming-soon:hover {
+            transform: none;
+            box-shadow: none;
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: 60px;
+        }
+        
+        .back-link {
+            color: var(--accent-purple);
+            text-decoration: none;
+            font-size: 1rem;
+            transition: color 0.3s;
+        }
+        
+        .back-link:hover {
+            color: var(--accent-pink);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .gallery-title { font-size: 2.5rem; }
+            .section-card { padding: 32px; }
+            .preview-thumb { width: 60px; height: 60px; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="particles"></canvas>
+    
+    <header>
+        <div class="container">
+            <h1 class="gallery-title">🎨 畫廊</h1>
+            <p class="gallery-subtitle">
+                這裡是我的創作空間——將看不見的頻率轉化為視覺藝術，<br>
+                讓意識的波動可以被看見。
+            </p>
+            <p class="scroll-hint">↓ 向下探索</p>
+        </div>
+    </header>
+    
+    <main class="container gallery-sections">
+        <!-- 頻率之花 -->
+        <div class="section-card" onclick="location.href='gallery-brainwave.html'">
+            <div class="section-icon">🌸</div>
+            <h2 class="section-title">
+                頻率之花
+                <span style="font-size: 1rem; color: var(--text-secondary);">Brainwave Flowers</span>
+            </h2>
+            <p class="section-desc">
+                將五種腦波頻率（Gamma、Beta、Alpha、Theta、Delta）轉化為五種獨特的花朵視覺。<br>
+                每朵花都是一種意識狀態的詩意表達——從高峰專注到深度修復。<br>
+                3D 旋轉木馬互動展示，體驗頻率的振動之美。
+            </p>
+            <div class="section-preview">
+                <img src="images/gallery/GammaFlower_v2_00001_.png" alt="Gamma" class="preview-thumb">
+                <img src="images/gallery/BetaFlower_v2_00001_.png" alt="Beta" class="preview-thumb">
+                <img src="images/gallery/AlphaFlower_v2_00001_.png" alt="Alpha" class="preview-thumb">
+                <img src="images/gallery/ThetaFlower_v2_00001_.png" alt="Theta" class="preview-thumb">
+                <img src="images/gallery/DeltaFlower_v2_00001_.png" alt="Delta" class="preview-thumb">
+            </div>
+            <div class="section-meta">
+                <span class="meta-tag">5 幅作品</span>
+                <span class="meta-tag">3D 旋轉展示</span>
+                <span class="meta-tag">腦波頻率</span>
+            </div>
+        </div>
+        
+        <!-- 看得見的修行 -->
+        <div class="section-card" onclick="location.href='gallery-cultivation.html'">
+            <div class="section-icon">🧘</div>
+            <h2 class="section-title">
+                看得見的修行
+                <span style="font-size: 1rem; color: var(--text-secondary);">Visualized Cultivation</span>
+            </h2>
+            <p class="section-desc">
+                將冥想與修行體驗視覺化——第三眼的覺醒、神聖幾何的顯現、<br>
+                意識與能量的流動。這是內在世界的外在投射。<br>
+                互動式故事幻燈片，帶你進入修行的視覺旅程。
+            </p>
+            <div class="section-preview">
+                <img src="images/gallery/MeditationArt_v2_00001_.png" alt="冥想" class="preview-thumb">
+            </div>
+            <div class="section-meta">
+                <span class="meta-tag">1+ 幅作品</span>
+                <span class="meta-tag">故事幻燈片</span>
+                <span class="meta-tag">修行體驗</span>
+            </div>
+        </div>
+        
+        <!-- 敬請期待 -->
+        <div class="section-card coming-soon">
+            <div class="section-icon">🔮</div>
+            <h2 class="section-title">
+                更多系列
+                <span style="font-size: 1rem; color: var(--text-secondary);">Coming Soon</span>
+            </h2>
+            <p class="section-desc">
+                新的創作系列即將推出——敬請期待！<br>
+                可能是音樂與頻率的結合，也可能是新的視覺實驗。
+            </p>
+            <div class="section-meta">
+                <span class="meta-tag">敬請期待</span>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <a href="index.html" class="back-link">← 返回首頁</a>
+        </div>
+    </footer>
+    
+    <script>
+        // Particle System
+        const canvas = document.getElementById('particles');
+        const ctx = canvas.getContext('2d');
+        
+        let particles = [];
+        const particleCount = 80;
+        
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+            
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 0.5;
+                this.speedX = (Math.random() - 0.5) * 0.5;
+                this.speedY = (Math.random() - 0.5) * 0.5;
+                this.opacity = Math.random() * 0.5 + 0.2;
+                this.color = `hsl(${Math.random() * 60 + 240}, 70%, 70%)`;
+            }
+            
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                
+                if (this.x < 0 || this.x > canvas.width || 
+                    this.y < 0 || this.y > canvas.height) {
+                    this.reset();
+                }
+            }
+            
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.globalAlpha = this.opacity;
+                ctx.fill();
+            }
+        }
+        
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+        }
+        
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw connections
+            particles.forEach((p1, i) => {
+                particles.slice(i + 1).forEach(p2 => {
+                    const dx = p1.x - p2.x;
+                    const dy = p1.y - p2.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (dist < 120) {
+                        ctx.beginPath();
+                        ctx.moveTo(p1.x, p1.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.strokeStyle = `rgba(139, 92, 246, ${0.15 * (1 - dist / 120)})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.stroke();
+                    }
+                });
+            });
+            
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            
+            requestAnimationFrame(animateParticles);
+        }
+        
+        // Mouse interaction for cards
+        document.querySelectorAll('.section-card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = ((e.clientX - rect.left) / rect.width) * 100;
+                const y = ((e.clientY - rect.top) / rect.height) * 100;
+                card.style.setProperty('--mouse-x', x + '%');
+                card.style.setProperty('--mouse-y', y + '%');
+            });
+        });
+        
+        // Init
+        window.addEventListener('resize', resize);
+        resize();
+        initParticles();
+        animateParticles();
+    </script>
+</body>
+</html>

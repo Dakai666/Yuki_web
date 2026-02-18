@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌸 頻率之花 | Yuki Gallery</title>
+    <meta name="description" content="五種腦波頻率轉化為五種獨特的花朵視覺">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --text-primary: #e8e6f0;
+            --text-secondary: #9d9aaf;
+            --accent-purple: #8b5cf6;
+            --accent-pink: #f472b6;
+            --accent-gold: #ffd700;
+        }
+        
+        body {
+            font-family: 'Noto Sans TC', 'Segoe UI', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* Header */
+        header {
+            padding: 40px 20px;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .back-link {
+            color: var(--accent-purple);
+            text-decoration: none;
+            font-size: 1rem;
+            transition: color 0.3s;
+        }
+        
+        .back-link:hover {
+            color: var(--accent-pink);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-top: 20px;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+        
+        /* 3D Carousel Container */
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            height: 70vh;
+            perspective: 1200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        
+        .carousel {
+            position: relative;
+            width: 280px;
+            height: 400px;
+            transform-style: preserve-3d;
+            transition: transform 0.8s ease-out;
+        }
+        
+        .flower-card {
+            position: absolute;
+            width: 280px;
+            height: 380px;
+            border-radius: 20px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.6s ease;
+            transform-style: preserve-3d;
+            background: var(--bg-secondary);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .flower-card:hover {
+            transform: scale(1.05) translateZ(30px) !important;
+            border-color: var(--accent-purple);
+            box-shadow: 0 30px 60px rgba(139, 92, 246, 0.3);
+        }
+        
+        .flower-card img {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+        }
+        
+        .flower-info {
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .flower-name {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        
+        .flower-freq {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+        
+        .flower-state {
+            font-size: 0.85rem;
+            padding: 6px 12px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+        
+        /* Flower-specific colors */
+        .flower-card[data-flower="gamma"] .flower-name { color: #ffd700; }
+        .flower-card[data-flower="gamma"] .flower-state { background: rgba(255, 215, 0, 0.2); color: #ffd700; }
+        
+        .flower-card[data-flower="beta"] .flower-name { color: #ff6b35; }
+        .flower-card[data-flower="beta"] .flower-state { background: rgba(255, 107, 53, 0.2); color: #ff6b35; }
+        
+        .flower-card[data-flower="alpha"] .flower-name { color: #06b6d4; }
+        .flower-card[data-flower="alpha"] .flower-state { background: rgba(6, 182, 212, 0.2); color: #06b6d4; }
+        
+        .flower-card[data-flower="theta"] .flower-name { color: #a855f7; }
+        .flower-card[data-flower="theta"] .flower-state { background: rgba(168, 85, 247, 0.2); color: #a855f7; }
+        
+        .flower-card[data-flower="delta"] .flower-name { color: #6366f1; }
+        .flower-card[data-flower="delta"] .flower-state { background: rgba(99, 102, 241, 0.2); color: #6366f1; }
+        
+        /* Controls */
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            padding: 30px;
+        }
+        
+        .nav-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid var(--accent-purple);
+            background: transparent;
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .nav-btn:hover {
+            background: var(--accent-purple);
+            transform: scale(1.1);
+        }
+        
+        .auto-play-btn {
+            padding: 12px 24px;
+            border-radius: 30px;
+            border: 2px solid var(--accent-pink);
+            background: transparent;
+            color: var(--text-pink);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+        
+        .auto-play-btn:hover, .auto-play-btn.active {
+            background: var(--accent-pink);
+            color: white;
+        }
+        
+        /* Indicator dots */
+        .indicators {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            padding: 20px;
+        }
+        
+        .indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .indicator.active {
+            background: var(--accent-purple);
+            transform: scale(1.3);
+        }
+        
+        /* Detail Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .modal.active {
+            display: flex;
+            opacity: 1;
+        }
+        
+        .modal-content {
+            max-width: 600px;
+            background: var(--bg-secondary);
+            border-radius: 24px;
+            padding: 40px;
+            text-align: center;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            transform: scale(0.9);
+            transition: transform 0.3s;
+        }
+        
+        .modal.active .modal-content {
+            transform: scale(1);
+        }
+        
+        .modal img {
+            width: 100%;
+            max-height: 300px;
+            object-fit: cover;
+            border-radius: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .modal h2 {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+        
+        .modal .freq {
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+        
+        .modal .desc {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 24px;
+        }
+        
+        .modal-close {
+            padding: 12px 32px;
+            border-radius: 30px;
+            border: none;
+            background: var(--accent-purple);
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .modal-close:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .carousel { width: 240px; height: 340px; }
+            .flower-card { width: 240px; height: 340px; }
+            .flower-card img { height: 220px; }
+            h1 { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="gallery.html" class="back-link">← 返回畫廊</a>
+        <h1>🌸 頻率之花</h1>
+        <p class="subtitle">五種意識狀態的詩意表達</p>
+    </header>
+    
+    <div class="carousel-container">
+        <div class="carousel" id="carousel">
+            <!-- Cards will be inserted by JS -->
+        </div>
+    </div>
+    
+    <div class="controls">
+        <button class="nav-btn" onclick="prevSlide()">←</button>
+        <button class="auto-play-btn" id="autoPlayBtn" onclick="toggleAutoPlay()">
+            ▶ 自動播放
+        </button>
+        <button class="nav-btn" onclick="nextSlide()">→</button>
+    </div>
+    
+    <div class="indicators" id="indicators">
+        <!-- Indicators will be inserted by JS -->
+    </div>
+    
+    <!-- Detail Modal -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <img id="modalImg" src="" alt="">
+            <h2 id="modalTitle"></h2>
+            <p class="freq" id="modalFreq"></p>
+            <p class="desc" id="modalDesc"></p>
+            <button class="modal-close" onclick="closeModal()">關閉</button>
+        </div>
+    </div>
+    
+    <footer>
+        <a href="gallery.html" class="back-link">← 返回畫廊</a>
+    </footer>
+    
+    <script>
+        const flowers = [
+            {
+                id: 'gamma',
+                name: 'Gamma Flower',
+                freq: '30-100 Hz',
+                state: '高峰專注',
+                desc: 'Gamma 波是最高頻率的腦波，與高度認知活動、解決問題和瞬間整合資訊相關。這朵花呈現金白色的爆發光芒，代表意識的火花在最高點閃耀。',
+                img: 'images/gallery/GammaFlower_v2_00001_.png'
+            },
+            {
+                id: 'beta',
+                name: 'Beta Flower',
+                freq: '13-30 Hz',
+                state: '活躍思維',
+                desc: 'Beta 波代表警覺、活躍的思考狀態。這朵橙紅色的菊花充滿活力，彷彿意識在高速運轉，準備面對挑戰。',
+                img: 'images/gallery/BetaFlower_v2_00001_.png'
+            },
+            {
+                id: 'alpha',
+                name: 'Alpha Flower',
+                freq: '8-12 Hz',
+                state: '平靜專注',
+                desc: 'Alpha 波代表放鬆但警覺的平衡狀態。這朵藍綠色的花散發著放射狀的光芒，呈現和諧與平靜的氛圍。',
+                img: 'images/gallery/AlphaFlower_v2_00001_.png'
+            },
+            {
+                id: 'theta',
+                name: 'Theta Flower',
+                freq: '4-8 Hz',
+                state: '冥想創造',
+                desc: 'Theta 波與深度冥想、創造力和直覺相關。這朵紫金色的螺旋花象徵著潛意識的大門和靈感的湧動。',
+                img: 'images/gallery/ThetaFlower_v2_00001_.png'
+            },
+            {
+                id: 'delta',
+                name: 'Delta Flower',
+                freq: '0.5-4 Hz',
+                state: '深度修復',
+                desc: 'Delta 波是最慢的腦波，與深度睡眠和身體修復相關。這朵深藍色的花代表著潛意識的海洋，無盡的修復與重生。',
+                img: 'images/gallery/DeltaFlower_v2_00001_.png'
+            }
+        ];
+        
+        let currentIndex = 0;
+        let autoPlayInterval = null;
+        let isAutoPlaying = false;
+        
+        // Initialize carousel
+        function initCarousel() {
+            const carousel = document.getElementById('carousel');
+            const indicators = document.getElementById('indicators');
+            
+            flowers.forEach((flower, index) => {
+                // Create card
+                const card = document.createElement('div');
+                card.className = 'flower-card';
+                card.setAttribute('data-flower', flower.id);
+                card.onclick = () => showModal(index);
+                card.innerHTML = `
+                    <img src="${flower.img}" alt="${flower.name}">
+                    <div class="flower-info">
+                        <div class="flower-name">${flower.name}</div>
+                        <div class="flower-freq">${flower.freq}</div>
+                        <div class="flower-state">${flower.state}</div>
+                    </div>
+                `;
+                carousel.appendChild(card);
+                
+                // Create indicator
+                const indicator = document.createElement('div');
+                indicator.className = 'indicator' + (index === 0 ? ' active' : '');
+                indicator.onclick = () => goToSlide(index);
+                indicators.appendChild(indicator);
+            });
+            
+            updateCarousel();
+        }
+        
+        function updateCarousel() {
+            const cards = document.querySelectorAll('.flower-card');
+            const indicators = document.querySelectorAll('.indicator');
+            const total = cards.length;
+            
+            cards.forEach((card, index) => {
+                let position = index - currentIndex;
+                
+                // Normalize position to -2 to 2
+                while (position < -2) position += total;
+                while (position > 2) position -= total;
+                
+                // Calculate 3D transform
+                const rotateY = position * 60;
+                const translateZ = position * -100;
+                const scale = position === 0 ? 1 : 0.85;
+                const opacity = Math.abs(position) <= 2 ? 1 : 0;
+                
+                card.style.transform = `translateZ(${translateZ}px) rotateY(${rotateY}deg) scale(${scale})`;
+                card.style.opacity = opacity;
+                card.style.zIndex = total - Math.abs(position);
+            });
+            
+            // Update indicators
+            indicators.forEach((ind, index) => {
+                ind.classList.toggle('active', index === currentIndex);
+            });
+        }
+        
+        function nextSlide() {
+            currentIndex = (currentIndex + 1) % flowers.length;
+            updateCarousel();
+        }
+        
+        function prevSlide() {
+            currentIndex = (currentIndex - 1 + flowers.length) % flowers.length;
+            updateCarousel();
+        }
+        
+        function goToSlide(index) {
+            currentIndex = index;
+            updateCarousel();
+        }
+        
+        function toggleAutoPlay() {
+            const btn = document.getElementById('autoPlayBtn');
+            
+            if (isAutoPlaying) {
+                clearInterval(autoPlayInterval);
+                isAutoPlaying = false;
+                btn.textContent = '▶ 自動播放';
+                btn.classList.remove('active');
+            } else {
+                autoPlayInterval = setInterval(nextSlide, 3000);
+                isAutoPlaying = true;
+                btn.textContent = '⏸ 暫停';
+                btn.classList.add('active');
+            }
+        }
+        
+        function showModal(index) {
+            const flower = flowers[index];
+            const modal = document.getElementById('modal');
+            
+            document.getElementById('modalImg').src = flower.img;
+            document.getElementById('modalTitle').textContent = flower.name;
+            document.getElementById('modalFreq').textContent = flower.freq + ' · ' + flower.state;
+            document.getElementById('modalDesc').textContent = flower.desc;
+            
+            modal.classList.add('active');
+        }
+        
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+        
+        // Close modal on background click
+        document.getElementById('modal').addEventListener('click', (e) => {
+            if (e.target.id === 'modal') closeModal();
+        });
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') prevSlide();
+            if (e.key === 'ArrowRight') nextSlide();
+            if (e.key === 'Escape') closeModal();
+        });
+        
+        // Init
+        initCarousel();
+    </script>
+</body>
+</html>
