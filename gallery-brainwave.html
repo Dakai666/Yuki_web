@@ -68,47 +68,49 @@
             position: relative;
             width: 100%;
             height: 70vh;
-            perspective: 1200px;
             display: flex;
             justify-content: center;
             align-items: center;
             overflow: hidden;
+            perspective: 1500px;
         }
         
         .carousel {
             position: relative;
-            width: 280px;
-            height: 400px;
+            width: 300px;
+            height: 420px;
             transform-style: preserve-3d;
-            transform: translateZ(-200px);
-            transition: transform 0.8s ease-out;
+            transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateZ(-300px);
         }
         
         .flower-card {
             position: absolute;
-            width: 280px;
-            height: 380px;
+            top: 0;
+            left: 0;
+            width: 300px;
+            height: 420px;
             border-radius: 20px;
             overflow: hidden;
             cursor: pointer;
-            transition: all 0.6s ease;
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
             transform-style: preserve-3d;
-            backface-visibility: hidden;
-            -webkit-backface-visibility: hidden;
             background: var(--bg-secondary);
             border: 2px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
         }
         
         .flower-card:hover {
-            transform: scale(1.05) translateZ(30px) !important;
+            transform: scale(1.05) !important;
             border-color: var(--accent-purple);
             box-shadow: 0 30px 60px rgba(139, 92, 246, 0.3);
         }
         
         .flower-card img {
             width: 100%;
-            height: 280px;
+            height: 300px;
             object-fit: cover;
         }
         
@@ -428,26 +430,33 @@
         }
         
         function updateCarousel() {
+            const carousel = document.getElementById('carousel');
             const cards = document.querySelectorAll('.flower-card');
             const indicators = document.querySelectorAll('.indicator');
             const total = cards.length;
+            const anglePerCard = 360 / total;
             
+            // Calculate rotation angle
+            const rotateY = -currentIndex * anglePerCard;
+            
+            // Rotate the entire carousel
+            carousel.style.transform = `translateZ(-300px) rotateY(${rotateY}deg)`;
+            
+            // Update card visibility and scale
             cards.forEach((card, index) => {
-                let position = index - currentIndex;
+                // Calculate relative position
+                let relPos = index - currentIndex;
+                while (relPos < -Math.floor(total/2)) relPos += total;
+                while (relPos > Math.floor(total/2)) relPos -= total;
                 
-                // Normalize position to -2 to 2
-                while (position < -2) position += total;
-                while (position > 2) position -= total;
+                // Calculate angle for this card
+                const cardAngle = relPos * anglePerCard;
                 
-                // Calculate 3D transform
-                const rotateY = position * 60;
-                const translateZ = position * -100;
-                const scale = position === 0 ? 1 : 0.85;
-                const opacity = Math.abs(position) <= 2 ? 1 : 0;
-                
-                card.style.transform = `translateZ(${translateZ}px) rotateY(${rotateY}deg) scale(${scale})`;
-                card.style.opacity = opacity;
-                card.style.zIndex = total - Math.abs(position);
+                // Apply transform
+                const translateZ = 300; // radius
+                card.style.transform = `rotateY(${-cardAngle}deg) translateZ(${translateZ}px)`;
+                card.style.opacity = Math.abs(relPos) <= 1 ? 1 : 0.4;
+                card.style.zIndex = 10 - Math.abs(relPos);
             });
             
             // Update indicators
