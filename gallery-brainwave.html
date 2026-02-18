@@ -72,7 +72,6 @@
             justify-content: center;
             align-items: center;
             overflow: hidden;
-            perspective: 1500px;
         }
         
         .carousel {
@@ -80,16 +79,17 @@
             width: 300px;
             height: 420px;
             transform-style: preserve-3d;
-            transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
-            transform: translateZ(-300px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
         .flower-card {
             position: absolute;
-            top: 0;
-            left: 0;
+            top: 50%;
+            left: 50%;
             width: 300px;
             height: 420px;
+            margin-left: -150px;
+            margin-top: -210px;
             border-radius: 20px;
             overflow: hidden;
             cursor: pointer;
@@ -98,19 +98,16 @@
             background: var(--bg-secondary);
             border: 2px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            backface-visibility: hidden;
-            -webkit-backface-visibility: hidden;
         }
         
         .flower-card:hover {
-            transform: scale(1.05) !important;
             border-color: var(--accent-purple);
             box-shadow: 0 30px 60px rgba(139, 92, 246, 0.3);
         }
         
         .flower-card img {
             width: 100%;
-            height: 300px;
+            height: 320px;
             object-fit: cover;
         }
         
@@ -433,30 +430,32 @@
             const carousel = document.getElementById('carousel');
             const cards = document.querySelectorAll('.flower-card');
             const indicators = document.querySelectorAll('.indicator');
-            const total = cards.length;
+            const total = flowers.length;
+            const radius = 400;
             const anglePerCard = 360 / total;
             
-            // Calculate rotation angle
-            const rotateY = -currentIndex * anglePerCard;
-            
-            // Rotate the entire carousel
-            carousel.style.transform = `translateZ(-300px) rotateY(${rotateY}deg)`;
-            
-            // Update card visibility and scale
+            // Position each card in a circle
             cards.forEach((card, index) => {
-                // Calculate relative position
+                const angle = anglePerCard * index;
+                const radian = (angle - 90) * Math.PI / 180;
+                
+                const x = Math.cos(radian) * radius;
+                const y = Math.sin(radian) * radius;
+                
+                // Calculate which cards should be visible
                 let relPos = index - currentIndex;
-                while (relPos < -Math.floor(total/2)) relPos += total;
-                while (relPos > Math.floor(total/2)) relPos -= total;
+                if (relPos < -total/2) relPos += total;
+                if (relPos > total/2) relPos -= total;
                 
-                // Calculate angle for this card
-                const cardAngle = relPos * anglePerCard;
-                
-                // Apply transform
-                const translateZ = 300; // radius
-                card.style.transform = `rotateY(${-cardAngle}deg) translateZ(${translateZ}px)`;
-                card.style.opacity = Math.abs(relPos) <= 1 ? 1 : 0.4;
-                card.style.zIndex = 10 - Math.abs(relPos);
+                // Only show nearby cards
+                if (Math.abs(relPos) <= 1.5) {
+                    card.style.opacity = '1';
+                    card.style.transform = `translate(${x}px, ${y}px) rotateY(${-angle}deg)`;
+                    card.style.zIndex = 10 - Math.abs(relPos);
+                } else {
+                    card.style.opacity = '0';
+                    card.style.zIndex = 0;
+                }
             });
             
             // Update indicators
