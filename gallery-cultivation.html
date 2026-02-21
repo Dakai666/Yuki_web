@@ -152,6 +152,25 @@
             transform: scale(1.1);
         }
         
+        .audio-btn, .music-btn {
+            padding: 8px 16px;
+            border-radius: 30px;
+            border: 2px solid var(--accent-gold);
+            background: transparent;
+            color: var(--text-primary);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .audio-btn:hover, .music-btn:hover {
+            background: var(--accent-gold);
+            transform: scale(1.05);
+        }
+        
         .nav-dots {
             display: flex;
             gap: 10px;
@@ -264,7 +283,15 @@
                 title: '光明心性',
                 text: '心性本光明，無需外在光源。當我們去除妄想與執著，這個光明自然顯現。這是一種佛教的修行觀點——真正的光不是外在的，而是內在本有的清澈性質。',
                 img: 'images/gallery/VisiblePractice-4-InnerLight_00001_.png',
-                icon: '🌟'
+                icon: '🌟',
+                audio: 'audio/yuki-innner-light_20260220.wav',
+                music: 'audio/yuki-inner-light-music-20260220.mp3'
+            },
+            {
+                title: '慈悲心',
+                text: '慈悲心像太陽平等照耀一切生命。無限綻放的金蓮花散發溫暖光芒，手印發出神聖的光——這是無條件的愛，像大自然一樣包容。',
+                img: 'images/gallery/VisiblePractice-5-CompassionHeart_00001_.png',
+                icon: '🌺'
             },
             {
                 title: '昆達里尼覺醒',
@@ -319,6 +346,18 @@
                             ${slide.title}
                         </h2>
                         <p class="slide-text">${slide.text}</p>
+                        ${slide.audio ? `
+                            <div style="margin-top: 20px; display: flex; gap: 10px; align-items: center;">
+                                <button class="audio-btn" onclick="playAudio('${slide.audio}')">
+                                    🎵 聽覺
+                                </button>
+                                ${slide.music ? `
+                                    <button class="music-btn" onclick="playMusic('${slide.music}')">
+                                        🎼 感受
+                                    </button>
+                                ` : ''}
+                            </div>
+                        ` : ''}
                     </div>
                 `;
                 container.appendChild(slideEl);
@@ -331,6 +370,16 @@
             });
             
             updateProgress();
+        }
+        
+        function playAudio(filename) {
+            const audio = new Audio(filename);
+            audio.play();
+        }
+        
+        function playMusic(filename) {
+            const audio = new Audio(filename);
+            audio.play();
         }
         
         function showSlide(index) {
